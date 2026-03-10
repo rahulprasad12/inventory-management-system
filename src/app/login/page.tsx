@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { LogIn, Package, Eye, EyeOff, Shield, AlertCircle } from 'lucide-react';
+import { LogIn, Package, Eye, EyeOff, Shield, AlertCircle, Leaf } from 'lucide-react';
 
 export default function LoginPage() {
     const router = useRouter();
@@ -49,33 +49,40 @@ export default function LoginPage() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            background: 'linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #312e81 100%)',
+            background: 'linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 40%, #e8f5e9 100%)',
             padding: '2rem',
             position: 'relative',
             overflow: 'hidden',
         }}>
-            {/* Glowing orbs background */}
+            {/* Soft decorative blobs */}
             <div style={{
-                position: 'absolute', top: '-200px', right: '-200px',
-                width: '600px', height: '600px', borderRadius: '50%',
-                background: 'rgba(99, 102, 241, 0.15)',
-                filter: 'blur(80px)', pointerEvents: 'none',
+                position: 'absolute', top: '-150px', right: '-150px',
+                width: '500px', height: '500px', borderRadius: '50%',
+                background: 'rgba(38, 166, 154, 0.12)',
+                filter: 'blur(60px)', pointerEvents: 'none',
             }} />
             <div style={{
-                position: 'absolute', bottom: '-200px', left: '-200px',
-                width: '600px', height: '600px', borderRadius: '50%',
-                background: 'rgba(37, 99, 235, 0.15)',
-                filter: 'blur(80px)', pointerEvents: 'none',
+                position: 'absolute', bottom: '-150px', left: '-150px',
+                width: '500px', height: '500px', borderRadius: '50%',
+                background: 'rgba(102, 187, 106, 0.12)',
+                filter: 'blur(60px)', pointerEvents: 'none',
+            }} />
+            <div style={{
+                position: 'absolute', top: '40%', left: '10%',
+                width: '200px', height: '200px', borderRadius: '50%',
+                background: 'rgba(128, 203, 196, 0.1)',
+                filter: 'blur(40px)', pointerEvents: 'none',
             }} />
 
+            {/* Card */}
             <div style={{
                 width: '100%', maxWidth: '460px',
-                background: 'rgba(255, 255, 255, 0.05)',
+                background: 'rgba(255, 255, 255, 0.88)',
                 backdropFilter: 'blur(20px)',
                 borderRadius: '2rem',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
+                border: '1px solid rgba(255, 255, 255, 0.9)',
                 padding: '3rem',
-                boxShadow: '0 25px 50px rgba(0,0,0,0.5)',
+                boxShadow: '0 20px 60px rgba(38, 166, 154, 0.15), 0 4px 16px rgba(0,0,0,0.06)',
                 position: 'relative',
                 zIndex: 1,
             }}>
@@ -83,18 +90,18 @@ export default function LoginPage() {
                 <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
                     <div style={{
                         width: '72px', height: '72px',
-                        background: 'linear-gradient(135deg, #3b82f6, #6366f1)',
+                        background: 'linear-gradient(135deg, #26a69a, #43a047)',
                         borderRadius: '1.5rem',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         margin: '0 auto 1.5rem',
-                        boxShadow: '0 8px 32px rgba(99, 102, 241, 0.4)',
+                        boxShadow: '0 8px 32px rgba(38, 166, 154, 0.35)',
                     }}>
                         <Package size={36} color="white" />
                     </div>
-                    <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'white', marginBottom: '0.5rem' }}>
+                    <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#1b5e20', marginBottom: '0.4rem' }}>
                         Inventory Pro
                     </h1>
-                    <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.9rem' }}>
+                    <p style={{ color: '#78909c', fontSize: '0.875rem' }}>
                         Admin Portal — Authorized Access Only
                     </p>
                 </div>
@@ -102,14 +109,14 @@ export default function LoginPage() {
                 {/* Security Badge */}
                 <div style={{
                     display: 'flex', alignItems: 'center', gap: '0.75rem',
-                    background: 'rgba(59, 130, 246, 0.1)',
-                    border: '1px solid rgba(59, 130, 246, 0.2)',
+                    background: 'rgba(38, 166, 154, 0.08)',
+                    border: '1px solid rgba(38, 166, 154, 0.2)',
                     borderRadius: '0.75rem',
                     padding: '0.875rem 1rem',
                     marginBottom: '2rem',
                 }}>
-                    <Shield size={18} color="#60a5fa" />
-                    <span style={{ color: '#93c5fd', fontSize: '0.8rem', fontWeight: 500 }}>
+                    <Shield size={18} color="#26a69a" />
+                    <span style={{ color: '#00695c', fontSize: '0.8rem', fontWeight: 500 }}>
                         Secure login with encrypted session management
                     </span>
                 </div>
@@ -117,7 +124,7 @@ export default function LoginPage() {
                 {/* Login Form */}
                 <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                     <div>
-                        <label style={{ display: 'block', color: 'rgba(255,255,255,0.7)', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.5rem' }}>
+                        <label style={{ display: 'block', color: '#455a64', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.5rem' }}>
                             Username
                         </label>
                         <input
@@ -129,22 +136,22 @@ export default function LoginPage() {
                             style={{
                                 width: '100%',
                                 padding: '0.875rem 1rem',
-                                background: 'rgba(255,255,255,0.08)',
-                                border: '1px solid rgba(255,255,255,0.15)',
+                                background: '#f1f8f7',
+                                border: '1.5px solid #b2dfdb',
                                 borderRadius: '0.875rem',
-                                color: 'white',
+                                color: '#263238',
                                 fontSize: '0.95rem',
                                 outline: 'none',
                                 boxSizing: 'border-box',
-                                transition: 'border-color 0.2s',
+                                transition: 'border-color 0.2s, box-shadow 0.2s',
                             }}
-                            onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
-                            onBlur={(e) => e.target.style.borderColor = 'rgba(255,255,255,0.15)'}
+                            onFocus={(e) => { e.target.style.borderColor = '#26a69a'; e.target.style.boxShadow = '0 0 0 3px rgba(38,166,154,0.12)'; }}
+                            onBlur={(e) => { e.target.style.borderColor = '#b2dfdb'; e.target.style.boxShadow = 'none'; }}
                         />
                     </div>
 
                     <div>
-                        <label style={{ display: 'block', color: 'rgba(255,255,255,0.7)', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.5rem' }}>
+                        <label style={{ display: 'block', color: '#455a64', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.5rem' }}>
                             Password
                         </label>
                         <div style={{ position: 'relative' }}>
@@ -157,24 +164,24 @@ export default function LoginPage() {
                                 style={{
                                     width: '100%',
                                     padding: '0.875rem 3rem 0.875rem 1rem',
-                                    background: 'rgba(255,255,255,0.08)',
-                                    border: '1px solid rgba(255,255,255,0.15)',
+                                    background: '#f1f8f7',
+                                    border: '1.5px solid #b2dfdb',
                                     borderRadius: '0.875rem',
-                                    color: 'white',
+                                    color: '#263238',
                                     fontSize: '0.95rem',
                                     outline: 'none',
                                     boxSizing: 'border-box',
-                                    transition: 'border-color 0.2s',
+                                    transition: 'border-color 0.2s, box-shadow 0.2s',
                                 }}
-                                onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
-                                onBlur={(e) => e.target.style.borderColor = 'rgba(255,255,255,0.15)'}
+                                onFocus={(e) => { e.target.style.borderColor = '#26a69a'; e.target.style.boxShadow = '0 0 0 3px rgba(38,166,154,0.12)'; }}
+                                onBlur={(e) => { e.target.style.borderColor = '#b2dfdb'; e.target.style.boxShadow = 'none'; }}
                             />
                             <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
                                 style={{
                                     position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)',
-                                    background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.5)',
+                                    background: 'none', border: 'none', cursor: 'pointer', color: '#90a4ae',
                                     padding: 0, display: 'flex', alignItems: 'center',
                                 }}
                             >
@@ -186,11 +193,11 @@ export default function LoginPage() {
                     {error && (
                         <div style={{
                             display: 'flex', alignItems: 'center', gap: '0.625rem',
-                            background: 'rgba(239, 68, 68, 0.1)',
-                            border: '1px solid rgba(239, 68, 68, 0.3)',
+                            background: 'rgba(239, 68, 68, 0.07)',
+                            border: '1px solid rgba(239, 68, 68, 0.25)',
                             borderRadius: '0.75rem',
                             padding: '0.75rem 1rem',
-                            color: '#fca5a5',
+                            color: '#c62828',
                             fontSize: '0.875rem',
                         }}>
                             <AlertCircle size={16} style={{ flexShrink: 0 }} />
@@ -204,7 +211,7 @@ export default function LoginPage() {
                         style={{
                             width: '100%',
                             padding: '1rem',
-                            background: isLoading ? 'rgba(99,102,241,0.5)' : 'linear-gradient(135deg, #3b82f6, #6366f1)',
+                            background: isLoading ? 'rgba(38,166,154,0.5)' : 'linear-gradient(135deg, #26a69a, #43a047)',
                             border: 'none',
                             borderRadius: '0.875rem',
                             color: 'white',
@@ -216,7 +223,7 @@ export default function LoginPage() {
                             justifyContent: 'center',
                             gap: '0.75rem',
                             marginTop: '0.5rem',
-                            boxShadow: '0 4px 24px rgba(99, 102, 241, 0.4)',
+                            boxShadow: '0 4px 24px rgba(38, 166, 154, 0.35)',
                             transition: 'all 0.2s',
                         }}
                     >
@@ -239,14 +246,17 @@ export default function LoginPage() {
                     </button>
                 </form>
 
-                <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.3)', fontSize: '0.75rem', marginTop: '2rem' }}>
-                    © 2024 Inventory Pro. All rights reserved.
-                </p>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', marginTop: '2rem' }}>
+                    <Leaf size={13} color="#80cbc4" />
+                    <p style={{ textAlign: 'center', color: '#b0bec5', fontSize: '0.75rem', margin: 0 }}>
+                        © 2024 Inventory Pro. All rights reserved.
+                    </p>
+                </div>
             </div>
 
             <style>{`
                 @keyframes spin { 100% { transform: rotate(360deg); } }
-                input::placeholder { color: rgba(255,255,255,0.3); }
+                input::placeholder { color: #90a4ae; }
             `}</style>
         </div>
     );
