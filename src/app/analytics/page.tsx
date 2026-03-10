@@ -119,7 +119,7 @@ export default function AnalyticsDashboard() {
                                         ))}
                                     </Pie>
                                     <Tooltip
-                                        formatter={(value: number) => `₹${value.toLocaleString('en-IN')}`}
+                                        formatter={(value: any) => `₹${Number(value).toLocaleString('en-IN')}`}
                                         contentStyle={{ borderRadius: '0.5rem', border: 'none', boxShadow: 'var(--shadow-lg)' }}
                                     />
                                     <Legend verticalAlign="bottom" height={36} wrapperStyle={{ paddingTop: '20px' }} />
@@ -152,7 +152,7 @@ export default function AnalyticsDashboard() {
                                     <Tooltip
                                         cursor={{ fill: '#f8fafc' }}
                                         contentStyle={{ borderRadius: '0.5rem', border: 'none', boxShadow: 'var(--shadow-lg)' }}
-                                        formatter={(value: number, name: string) => name === 'Revenue' ? `₹${value.toLocaleString('en-IN')}` : value}
+                                        formatter={(value: any, name: any) => name === 'Revenue' ? `₹${Number(value).toLocaleString('en-IN')}` : value}
                                     />
                                     <Bar yAxisId="left" dataKey="Revenue" fill="#3b82f6" radius={[4, 4, 0, 0]} maxBarSize={60} />
                                 </BarChart>
