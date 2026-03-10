@@ -93,7 +93,7 @@ async function main() {
 
     const invoiceData = [
         {
-            invoiceNumber: 'INV-2024-001',
+            invoiceNumber: 'INV-2026-001',
             customerName: 'Rajesh Kumar',
             customerPhone: '+91 9876543210',
             items: [
@@ -102,7 +102,7 @@ async function main() {
             ],
         },
         {
-            invoiceNumber: 'INV-2024-002',
+            invoiceNumber: 'INV-2026-002',
             customerName: 'Priya Sharma',
             customerPhone: '+91 9123456789',
             items: [
@@ -111,7 +111,7 @@ async function main() {
             ],
         },
         {
-            invoiceNumber: 'INV-2024-003',
+            invoiceNumber: 'INV-2026-003',
             customerName: 'Amit Verma',
             customerPhone: '+91 9988776655',
             items: [
@@ -120,7 +120,7 @@ async function main() {
             ],
         },
         {
-            invoiceNumber: 'INV-2024-004',
+            invoiceNumber: 'INV-2026-004',
             customerName: 'Sunita Patel',
             customerPhone: '+91 9871234567',
             items: [
@@ -129,7 +129,7 @@ async function main() {
             ],
         },
         {
-            invoiceNumber: 'INV-2024-005',
+            invoiceNumber: 'INV-2026-005',
             customerName: 'Vikram Singh',
             customerPhone: '+91 9955443322',
             items: [
