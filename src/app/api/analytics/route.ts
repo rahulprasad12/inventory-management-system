@@ -5,6 +5,7 @@ export async function GET(request: Request) {
     try {
         const { searchParams } = new URL(request.url);
         const period = searchParams.get('period') || 'day';
+        const storeId = searchParams.get('storeId');
 
         // Set date boundaries
         const now = new Date();
@@ -22,13 +23,18 @@ export async function GET(request: Request) {
             startDate = new Date(now.getFullYear(), now.getMonth(), 1);
         }
 
+        // Set query filters
+        const whereClause: any = {};
+        if (period !== 'all_time') {
+            whereClause.createdAt = { gte: startDate };
+        }
+        if (storeId) {
+            whereClause.storeId = storeId;
+        }
+
         // Fetch all invoices in the period
         const invoices = await prisma.invoice.findMany({
-            where: period === 'all_time' ? undefined : {
-                createdAt: {
-                    gte: startDate
-                }
-            },
+            where: whereClause,
             include: {
                 items: {
                     include: {
