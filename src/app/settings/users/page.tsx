@@ -68,7 +68,7 @@ export default function UsersPage() {
 
     return (
         <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
                 <div>
                     <h1 className="page-title"><Users size={24} style={{ display: 'inline', marginRight: '0.75rem' }} />User Management</h1>
                     <p className="page-description">Create and manage user accounts and their system roles.</p>
@@ -96,8 +96,8 @@ export default function UsersPage() {
             </div>
 
             {/* User Table */}
-            <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <div className="card" style={{ padding: 0, overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '600px' }}>
                     <thead>
                         <tr style={{ background: '#f8fafc', borderBottom: '2px solid var(--border)' }}>
                             {['Name', 'Username', 'Role', 'Created', 'Actions'].map(h => (

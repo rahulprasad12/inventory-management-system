@@ -168,6 +168,50 @@ a {
 }
 
 /* ============================================
+   MOBILE RESPONSIVENESS UTILITIES
+   ============================================ */
+@media (max-width: 768px) {
+  .hide-on-mobile {
+    display: none !important;
+  }
+
+  .show-on-mobile {
+    display: flex !important;
+  }
+
+  .container {
+    padding: 1rem;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .page-description {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+
+  .card {
+    padding: 1rem;
+  }
+
+  /* Universal input spacing for mobile */
+  .input-field {
+    font-size: 16px;
+    /* Prevents iOS auto-zoom */
+    padding: 0.6rem 0.8rem;
+  }
+}
+
+/* Default state for mobile-only elements */
+@media (min-width: 769px) {
+  .show-on-mobile {
+    display: none !important;
+  }
+}
+
+/* ============================================
    GLOBAL PRINT STYLES
    Only the invoice content should print.
    All navigation, sidebars, and header are hidden.

@@ -64,8 +64,8 @@ export default function RolesPage() {
                 <p className="page-description">Configure which sections of the app each user role can access.</p>
             </div>
 
-            <div className="card glass-panel" style={{ padding: 0, overflow: 'hidden' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+            <div className="card glass-panel" style={{ padding: 0, overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '600px' }}>
                     <thead>
                         <tr style={{ background: '#f8fafc', borderBottom: '2px solid var(--border)' }}>
                             <th style={{ padding: '1rem', width: '25%' }}>Section</th>
@@ -109,12 +109,12 @@ export default function RolesPage() {
             </div>
 
             {/* Save Buttons Row */}
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '2rem', marginTop: '1.5rem', padding: '0 1rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1.5rem', padding: '0 1rem', flexWrap: 'wrap' }}>
                 {['MANAGER', 'STAFF'].map(roleName => {
                     const roleObj = roles.find(r => r.role === roleName);
                     const isSaving = saving === roleName;
                     return (
-                        <div key={roleName} style={{ width: '25%', paddingLeft: '1rem' }}>
+                        <div key={roleName} style={{ flex: 1, minWidth: '150px' }}>
                             <button
                                 onClick={() => roleObj && handleSave(roleObj)}
                                 disabled={isSaving || !roleObj}

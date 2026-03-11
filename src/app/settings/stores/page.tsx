@@ -75,7 +75,7 @@ export default function StoresPage() {
 
     return (
         <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
                 <div>
                     <h1 className="page-title">Stores & Warehouses</h1>
                     <p className="page-description">Manage your store branches and warehouse locations.</p>
@@ -95,7 +95,7 @@ export default function StoresPage() {
                     <button className="btn-primary" onClick={openAdd}><Plus size={16} /> Add Store</button>
                 </div>
             ) : (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '1.5rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 300px), 1fr))', gap: '1.5rem' }}>
                     {stores.map(store => (
                         <div key={store.id} className="card" style={{ opacity: store.isActive ? 1 : 0.6 }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>

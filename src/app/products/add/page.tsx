@@ -152,7 +152,7 @@ export default function AddProductPage() {
                 {/* ── Section 1: Basic Info ─────────────────── */}
                 <div className="card glass-panel" style={{ padding: '1.75rem', marginBottom: '1.25rem' }}>
                     <h3 style={{ fontSize: '0.9rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#64748b', marginBottom: '1.25rem' }}>📝 Basic Info</h3>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '1.25rem' }}>
                         <div className="input-group">
                             <label className="input-label" htmlFor="name">Product Name *</label>
                             <input id="name" type="text" className="input-field" value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Amul Butter 500g" required />
@@ -223,7 +223,7 @@ export default function AddProductPage() {
                         {sectionBox('weight', <Weight size={18} />, 'Weight')}
                         {sectionBox('volume', <Droplets size={18} />, 'Volume')}
                     </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 250px), 1fr))', gap: '1.25rem' }}>
                         <div className="input-group">
                             <label className="input-label">Value</label>
                             <input type="number" step="0.1" min="0" className="input-field" value={measurementValue} onChange={e => setMeasurementValue(e.target.value)} placeholder={`e.g. ${measurementType === 'pieces' ? '12' : measurementType === 'weight' ? '500' : '1'}`} />
@@ -267,7 +267,7 @@ export default function AddProductPage() {
                     </div>
 
                     {/* Expiry date toggle */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '1rem', background: 'rgba(245,158,11,0.05)', border: '1.5px solid rgba(245,158,11,0.2)', borderRadius: '0.75rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '1rem', background: 'rgba(245,158,11,0.05)', border: '1.5px solid rgba(245,158,11,0.2)', borderRadius: '0.75rem', flexWrap: 'wrap' }}>
                         <input type="checkbox" id="hasExpiry" checked={hasExpiry} onChange={e => setHasExpiry(e.target.checked)} style={{ width: '16px', height: '16px', accentColor: '#f59e0b', cursor: 'pointer' }} />
                         <label htmlFor="hasExpiry" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer', color: '#92400e' }}>
                             <Calendar size={15} /> This product has an expiry date

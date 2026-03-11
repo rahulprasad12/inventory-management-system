@@ -268,13 +268,13 @@ export default function MakeInvoicePage() {
                 <p className="page-description">Fill in customer details, select store, and add products.</p>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2rem' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem' }}>
+                <div style={{ flex: '1 1 500px', display: 'flex', flexDirection: 'column', gap: '1.5rem', minWidth: 0 }}>
 
                     {/* Customer + Store Card */}
                     <div className="card glass-panel">
                         <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem' }}>Customer & Store</h3>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '1rem' }}>
                             <div className="input-group">
                                 <label className="input-label" htmlFor="customer">Customer Name *</label>
                                 <input id="customer" type="text" className="input-field" value={customerName} onChange={e => setCustomerName(e.target.value)} placeholder="e.g. Rohit Kumar" required />
@@ -330,7 +330,7 @@ export default function MakeInvoicePage() {
                         </div>
 
                         {items.length > 0 ? (
-                            <div style={{ marginTop: '1.5rem', borderTop: '1px solid var(--border)', paddingTop: '1rem' }}>
+                            <div style={{ marginTop: '1.5rem', borderTop: '1px solid var(--border)', paddingTop: '1rem', overflowX: 'auto' }}>
                                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
                                     <thead>
                                         <tr style={{ color: '#64748b', textAlign: 'left', borderBottom: '1px solid var(--border)' }}>
@@ -371,7 +371,7 @@ export default function MakeInvoicePage() {
                 </div>
 
                 {/* Right: Summary */}
-                <div style={{ alignSelf: 'start' }}>
+                <div style={{ flex: '1 1 300px', alignSelf: 'start' }}>
                     <div className="card glass-panel" style={{ position: 'sticky', top: '5rem' }}>
                         <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1.5rem', borderBottom: '1px solid var(--border)', paddingBottom: '0.75rem' }}>Invoice Summary</h3>
 
