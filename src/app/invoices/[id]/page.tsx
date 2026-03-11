@@ -14,11 +14,19 @@ const ClientPDFDownloadLink = dynamic(
 );
 
 // Internal PDF Document definition (will be used by DownloadLink)
-import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
+
+Font.register({
+    family: 'Roboto',
+    fonts: [
+        { src: '/fonts/Roboto-Regular.ttf' },
+        { src: '/fonts/Roboto-Bold.ttf', fontWeight: 'bold' }
+    ]
+});
 
 // PDF Styles (Matching the HTML styles for consistency)
 const pdfStyles = StyleSheet.create({
-    page: { padding: 40, fontSize: 10, fontFamily: 'Helvetica', color: '#1e293b' },
+    page: { padding: 40, fontSize: 10, fontFamily: 'Roboto', color: '#1e293b' },
     header: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 30 },
     title: { fontSize: 24, fontWeight: 'bold', color: '#1e3a8a' },
     section: { marginBottom: 20 },
@@ -101,21 +109,21 @@ const InvoicePDF = ({ invoice, gstEnabled = true }: { invoice: Invoice, gstEnabl
                     <View key={item.id} style={pdfStyles.tableRow}>
                         <Text style={pdfStyles.col1}>{item.product?.name || 'Unknown Item'}</Text>
                         <Text style={pdfStyles.col2}>{item.quantity}</Text>
-                        <Text style={pdfStyles.col3}>Rs. {item.priceAtTime.toFixed(2)}</Text>
+                        <Text style={pdfStyles.col3}>₹{item.priceAtTime.toFixed(2)}</Text>
                         <Text style={pdfStyles.col4}>{item.discountAtTime}%</Text>
                         {gstEnabled && <Text style={pdfStyles.col5}>{item.gstAtTime}%</Text>}
-                        <Text style={pdfStyles.col6}>Rs. {((item.priceAtTime * item.quantity * (1 - item.discountAtTime / 100)) * (1 + item.gstAtTime / 100)).toFixed(2)}</Text>
+                        <Text style={pdfStyles.col6}>₹{((item.priceAtTime * item.quantity * (1 - item.discountAtTime / 100)) * (1 + item.gstAtTime / 100)).toFixed(2)}</Text>
                     </View>
                 ))}
             </View>
 
             <View style={pdfStyles.summary}>
-                <View style={pdfStyles.summaryRow}><Text>Subtotal</Text><Text>Rs. {invoice.subTotal.toFixed(2)}</Text></View>
-                <View style={pdfStyles.summaryRow}><Text>Discount</Text><Text>-Rs. {invoice.discountTotal.toFixed(2)}</Text></View>
-                {gstEnabled && <View style={pdfStyles.summaryRow}><Text>GST</Text><Text>+Rs. {invoice.gstTotal.toFixed(2)}</Text></View>}
+                <View style={pdfStyles.summaryRow}><Text>Subtotal</Text><Text>₹{invoice.subTotal.toFixed(2)}</Text></View>
+                <View style={pdfStyles.summaryRow}><Text>Discount</Text><Text>-₹{invoice.discountTotal.toFixed(2)}</Text></View>
+                {gstEnabled && <View style={pdfStyles.summaryRow}><Text>GST</Text><Text>+₹{invoice.gstTotal.toFixed(2)}</Text></View>}
                 <View style={[pdfStyles.summaryRow, { borderTop: '1 solid #e2e8f0', marginTop: 5, paddingTop: 5 }]}>
                     <Text style={pdfStyles.totalText}>Total</Text>
-                    <Text style={pdfStyles.totalText}>Rs. {invoice.totalAmount.toFixed(2)}</Text>
+                    <Text style={pdfStyles.totalText}>₹{invoice.totalAmount.toFixed(2)}</Text>
                 </View>
             </View>
 
