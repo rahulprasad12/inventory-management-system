@@ -5,23 +5,32 @@ import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
     PieChart, Pie, Cell, Legend
 } from 'recharts';
-import { TrendingUp, PieChart as PieIcon, BarChart3, CreditCard, Activity, Calendar, Loader2 } from 'lucide-react';
+import { TrendingUp, PieChart as PieIcon, BarChart3, CreditCard, Activity, Loader2, Store } from 'lucide-react';
 
 export default function AnalyticsDashboard() {
     const [period, setPeriod] = useState('month');
+    const [storeId, setStoreId] = useState('');
+    const [stores, setStores] = useState<{ id: string; name: string; branch?: string }[]>([]);
     const [data, setData] = useState<any>(null);
+    const [storeData, setStoreData] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
+        fetch('/api/stores').then(r => r.json()).then(setStores);
+    }, []);
+
+    useEffect(() => {
         setIsLoading(true);
-        fetch(`/api/analytics?period=${period}`)
-            .then(res => res.json())
-            .then(d => {
-                setData(d);
-                setIsLoading(false);
-            })
-            .catch(() => setIsLoading(false));
-    }, [period]);
+        const url = storeId ? `/api/analytics?period=${period}&storeId=${storeId}` : `/api/analytics?period=${period}`;
+        fetch(url).then(res => res.json()).then(d => { setData(d); setIsLoading(false); }).catch(() => setIsLoading(false));
+    }, [period, storeId]);
+
+    useEffect(() => {
+        // Load all stores data for comparison chart
+        if (stores.length > 1) {
+            Promise.all(stores.map(s => fetch(`/api/analytics?period=${period}&storeId=${s.id}`).then(r => r.json()).then(d => ({ store: s.branch || s.name, revenue: d.revenue?.totalEarnings || 0, paid: d.revenue?.totalPaid || 0 })))).then(setStoreData);
+        }
+    }, [period, stores]);
 
     if (!data && isLoading) return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
@@ -54,25 +63,28 @@ export default function AnalyticsDashboard() {
                     <p className="page-description">Deep dive into your business metrics, outstanding dues, and product performance.</p>
                 </div>
 
-                <div className="card glass-panel" style={{ padding: '0.5rem', display: 'flex', gap: '0.5rem' }}>
+                <div className="card glass-panel" style={{ padding: '0.5rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                     {[
                         { id: 'day', label: 'Today' },
                         { id: 'week', label: 'This Week' },
                         { id: 'month', label: 'This Month' },
                         { id: 'all_time', label: 'All Time' }
                     ].map(p => (
-                        <button key={p.id}
-                            onClick={() => setPeriod(p.id)}
-                            style={{
-                                padding: '0.5rem 1rem', borderRadius: '0.5rem', border: 'none', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer', transition: 'all 0.2s',
-                                background: period === p.id ? 'var(--primary)' : 'transparent',
-                                color: period === p.id ? 'white' : '#64748b'
-                            }}
-                        >
+                        <button key={p.id} onClick={() => setPeriod(p.id)}
+                            style={{ padding: '0.5rem 1rem', borderRadius: '0.5rem', border: 'none', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer', transition: 'all 0.2s', background: period === p.id ? 'var(--primary)' : 'transparent', color: period === p.id ? 'white' : '#64748b' }}>
                             {p.label}
                         </button>
                     ))}
                 </div>
+                {stores.length > 0 && (
+                    <div className="card glass-panel" style={{ padding: '0.4rem 0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <Store size={15} style={{ color: '#64748b' }} />
+                        <select value={storeId} onChange={e => setStoreId(e.target.value)} style={{ border: 'none', background: 'transparent', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', outline: 'none' }}>
+                            <option value="">All Stores</option>
+                            {stores.map(s => <option key={s.id} value={s.id}>{s.name}{s.branch ? ` — ${s.branch}` : ''}</option>)}
+                        </select>
+                    </div>
+                )}
             </div>
 
             {/* Top Summary Cards */}
@@ -164,6 +176,28 @@ export default function AnalyticsDashboard() {
                         </div>
                     )}
                 </div>
+
+                {/* Store Comparison Chart — only when multiple stores exist */}
+                {storeData.length > 1 && (
+                    <div className="card glass-panel" style={{ gridColumn: '1 / -1' }}>
+                        <h2 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <Store size={20} /> Store / Warehouse Comparison
+                        </h2>
+                        <div style={{ height: '280px', width: '100%' }}>
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={storeData} margin={{ top: 10, right: 30, left: 20, bottom: 5 }}>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                                    <XAxis dataKey="store" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} />
+                                    <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} tickFormatter={val => `₹${val >= 1000 ? `${(val / 1000).toFixed(0)}k` : val}`} />
+                                    <Tooltip contentStyle={{ borderRadius: '0.5rem', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }} formatter={(v: any) => `₹${Number(v).toLocaleString('en-IN')}`} />
+                                    <Legend />
+                                    <Bar dataKey="revenue" name="Total Revenue" fill="#3b82f6" radius={[4, 4, 0, 0]} maxBarSize={60} />
+                                    <Bar dataKey="paid" name="Collected" fill="#22c55e" radius={[4, 4, 0, 0]} maxBarSize={60} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+                )}
 
                 {/* Top Products Table */}
                 <div className="card glass-panel" style={{ gridColumn: '1 / -1' }}>

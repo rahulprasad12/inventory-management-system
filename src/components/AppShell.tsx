@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Package, LayoutDashboard, FileText, PlusCircle, Settings, BarChart3, Store } from 'lucide-react';
+import { Package, LayoutDashboard, FileText, PlusCircle, Settings, BarChart3, Store, Users, Shield } from 'lucide-react';
 import LogoutButton from '@/components/LogoutButton';
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
@@ -116,6 +116,26 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                     }}>
                         <Store size={15} />
                         Stores & Warehouses
+                    </Link>
+                    <Link href="/settings/users" style={{
+                        display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem 1rem 0.5rem 2.25rem',
+                        borderRadius: '0.5rem', textDecoration: 'none',
+                        color: pathname === '/settings/users' ? 'var(--foreground)' : '#64748b',
+                        background: pathname === '/settings/users' ? 'var(--input)' : 'transparent',
+                        fontWeight: 500, fontSize: '0.82rem',
+                    }}>
+                        <Users size={15} />
+                        User Management
+                    </Link>
+                    <Link href="/settings/roles" style={{
+                        display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem 1rem 0.5rem 2.25rem',
+                        borderRadius: '0.5rem', textDecoration: 'none',
+                        color: pathname === '/settings/roles' ? 'var(--foreground)' : '#64748b',
+                        background: pathname === '/settings/roles' ? 'var(--input)' : 'transparent',
+                        fontWeight: 500, fontSize: '0.82rem',
+                    }}>
+                        <Shield size={15} />
+                        Role Permissions
                     </Link>
                 </div>
 

@@ -30,7 +30,28 @@ export async function middleware(request: NextRequest) {
     }
 
     try {
-        await jwtVerify(token, JWT_SECRET);
+        const { payload } = await jwtVerify(token, JWT_SECRET);
+
+        // Skip DB permission check for specific routes
+        if (!pathname.startsWith('/api/') && pathname !== '/' && pathname !== '/unauthorized') {
+            try {
+                const origin = request.nextUrl.origin;
+                // Add query params to check access
+                const checkUrl = `${origin}/api/roles/check?role=${payload.role}&path=${encodeURIComponent(pathname)}`;
+                const res = await fetch(checkUrl);
+
+                if (res.ok) {
+                    const { allowed } = await res.json();
+                    if (!allowed) {
+                        return NextResponse.redirect(new URL('/unauthorized', request.url));
+                    }
+                }
+            } catch (err) {
+                // If API fails, default to allowing or maybe let the route handle it
+                console.error('Role check failed', err);
+            }
+        }
+
         // Pass pathname as header so root layout can detect login page
         const response = NextResponse.next();
         response.headers.set('x-pathname', pathname);
