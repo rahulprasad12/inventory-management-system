@@ -142,14 +142,44 @@ function ProductsContent() {
                         <ChevronDown size={14} style={{ color: '#94a3b8' }} />
                     </div>
                 )}
-                {filterParam && (
+                <div style={{ display: 'flex', background: 'var(--muted)', borderRadius: '0.625rem', padding: '4px', gap: '4px' }}>
                     <button
                         onClick={() => router.push('/products')}
-                        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', borderRadius: '0.5rem', border: '1px solid var(--primary)', background: 'rgba(37,99,235,0.05)', color: 'var(--primary)', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer' }}
+                        style={{
+                            padding: '0.5rem 1rem', borderRadius: '0.5rem', border: 'none', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600,
+                            background: !filterParam ? 'white' : 'transparent',
+                            color: !filterParam ? 'var(--foreground)' : '#64748b',
+                            boxShadow: !filterParam ? '0 1px 4px rgba(0,0,0,0.1)' : 'none',
+                            transition: 'all 0.2s', display: 'flex', alignItems: 'center', gap: '0.4rem'
+                        }}
                     >
-                        Viewing {filterParam === 'low_stock' ? 'Low Stock' : 'Near Expiry'} <X size={14} />
+                        <Package size={14} /> All Items
                     </button>
-                )}
+                    <button
+                        onClick={() => router.push('/products?filter=low_stock')}
+                        style={{
+                            padding: '0.5rem 1rem', borderRadius: '0.5rem', border: 'none', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600,
+                            background: filterParam === 'low_stock' ? 'white' : 'transparent',
+                            color: filterParam === 'low_stock' ? '#ef4444' : '#64748b',
+                            boxShadow: filterParam === 'low_stock' ? '0 1px 4px rgba(0,0,0,0.1)' : 'none',
+                            transition: 'all 0.2s', display: 'flex', alignItems: 'center', gap: '0.4rem'
+                        }}
+                    >
+                        <AlertTriangle size={14} /> Low Stock
+                    </button>
+                    <button
+                        onClick={() => router.push('/products?filter=near_expiry')}
+                        style={{
+                            padding: '0.5rem 1rem', borderRadius: '0.5rem', border: 'none', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600,
+                            background: filterParam === 'near_expiry' ? 'white' : 'transparent',
+                            color: filterParam === 'near_expiry' ? '#f59e0b' : '#64748b',
+                            boxShadow: filterParam === 'near_expiry' ? '0 1px 4px rgba(0,0,0,0.1)' : 'none',
+                            transition: 'all 0.2s', display: 'flex', alignItems: 'center', gap: '0.4rem'
+                        }}
+                    >
+                        <Calendar size={14} /> Near Expiry
+                    </button>
+                </div>
             </div>
 
             {isLoading ? (
