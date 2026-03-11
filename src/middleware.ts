@@ -41,10 +41,21 @@ export async function middleware(request: NextRequest) {
                 const res = await fetch(checkUrl);
 
                 if (res.ok) {
-                    const { allowed } = await res.json();
-                    if (!allowed) {
+                    const contentType = res.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        const { allowed } = await res.json();
+                        if (!allowed) {
+                            return NextResponse.redirect(new URL('/unauthorized', request.url));
+                        }
+                    } else {
+                        console.error('Role check API returned non-JSON response');
+                        // Safe fallback on unexpected response
                         return NextResponse.redirect(new URL('/unauthorized', request.url));
                     }
+                } else {
+                    console.error('Role check API failed with status:', res.status);
+                    // Deny access if authority check fails
+                    return NextResponse.redirect(new URL('/unauthorized', request.url));
                 }
             } catch (err) {
                 // If API fails, default to allowing or maybe let the route handle it
