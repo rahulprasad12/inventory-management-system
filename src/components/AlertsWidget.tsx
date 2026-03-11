@@ -117,7 +117,7 @@ export default function AlertsWidget() {
                                         <div style={{ textAlign: 'right' }}>
                                             <div style={{ fontWeight: 700, color: 'var(--destructive)', fontSize: '1.1rem' }}>{item.stockQuantity}</div>
                                             <div style={{ fontSize: '0.6rem', color: '#ef4444', fontWeight: 600, textTransform: 'uppercase' }}>
-                                                / {item.lowStockThreshold} threshold
+                                                / {item.lowStockThreshold}
                                             </div>
                                         </div>
                                     </div>
