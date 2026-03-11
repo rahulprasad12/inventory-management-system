@@ -23,18 +23,12 @@ export async function GET(request: Request) {
             startDate = new Date(now.getFullYear(), now.getMonth(), 1);
         }
 
-        // Set query filters
-        const whereClause: any = {};
-        if (period !== 'all_time') {
-            whereClause.createdAt = { gte: startDate };
-        }
-        if (storeId) {
-            whereClause.storeId = storeId;
-        }
-
         // Fetch all invoices in the period
         const invoices = await prisma.invoice.findMany({
-            where: whereClause,
+            where: {
+                ...(period !== 'all_time' ? { createdAt: { gte: startDate } } : {}),
+                ...(storeId ? { storeId } : {})
+            },
             include: {
                 items: {
                     include: {
