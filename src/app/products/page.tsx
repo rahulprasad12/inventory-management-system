@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import Link from 'next/link';
-import { Package, Search, Plus, Loader2, Minus, AlertTriangle, Calendar, Store, ChevronDown } from 'lucide-react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { Package, Search, Plus, Loader2, Minus, AlertTriangle, Calendar, Store, ChevronDown, X } from 'lucide-react';
 
 interface Product {
     id: string;
@@ -20,7 +21,11 @@ interface Product {
 
 interface StoreOption { id: string; name: string; branch?: string; }
 
-export default function ProductsPage() {
+function ProductsContent() {
+    const searchParams = useSearchParams();
+    const router = useRouter();
+    const filterParam = searchParams.get('filter');
+
     const [products, setProducts] = useState<Product[]>([]);
     const [stores, setStores] = useState<StoreOption[]>([]);
     const [selectedStoreId, setSelectedStoreId] = useState('');
@@ -72,10 +77,20 @@ export default function ProductsPage() {
         return { bg: 'rgba(34,197,94,0.1)', color: '#22c55e', label: `Exp: ${days}d` };
     };
 
-    const filtered = products.filter(p =>
+    let filtered = products.filter(p =>
         p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.sku.toLowerCase().includes(searchQuery.toLowerCase())
     );
+
+    if (filterParam === 'low_stock') {
+        filtered = filtered.filter(p => p.stockQuantity < p.lowStockThreshold);
+    } else if (filterParam === 'near_expiry') {
+        filtered = filtered.filter(p => {
+            if (!p.expiryDate) return false;
+            const days = getDaysUntilExpiry(p.expiryDate);
+            return days >= 0 && days <= 30;
+        });
+    }
 
     const grouped = filtered.reduce((acc, p) => {
         if (!acc[p.section]) acc[p.section] = [];
@@ -126,6 +141,14 @@ export default function ProductsPage() {
                         </select>
                         <ChevronDown size={14} style={{ color: '#94a3b8' }} />
                     </div>
+                )}
+                {filterParam && (
+                    <button
+                        onClick={() => router.push('/products')}
+                        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', borderRadius: '0.5rem', border: '1px solid var(--primary)', background: 'rgba(37,99,235,0.05)', color: 'var(--primary)', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer' }}
+                    >
+                        Viewing {filterParam === 'low_stock' ? 'Low Stock' : 'Near Expiry'} <X size={14} />
+                    </button>
                 )}
             </div>
 
@@ -211,5 +234,13 @@ export default function ProductsPage() {
                 </div>
             )}
         </div>
+    );
+}
+
+export default function ProductsPage() {
+    return (
+        <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', padding: '4rem 0' }}><Loader2 size={40} className="animate-spin text-primary" /></div>}>
+            <ProductsContent />
+        </Suspense>
     );
 }

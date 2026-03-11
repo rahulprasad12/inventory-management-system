@@ -100,7 +100,7 @@ export default function AlertsWidget() {
                     </div>
                 ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                        {items.slice(0, 8).map(item => {
+                        {items.slice(0, 10).map(item => {
                             if (activeTab === 'low_stock') {
                                 return (
                                     <div key={item.id} className="glass-panel" style={{
@@ -116,9 +116,6 @@ export default function AlertsWidget() {
                                         </div>
                                         <div style={{ textAlign: 'right' }}>
                                             <div style={{ fontWeight: 700, color: 'var(--destructive)', fontSize: '1.1rem' }}>{item.stockQuantity}</div>
-                                            <div style={{ fontSize: '0.6rem', color: '#ef4444', fontWeight: 600, textTransform: 'uppercase' }}>
-                                                / {item.lowStockThreshold}
-                                            </div>
                                         </div>
                                     </div>
                                 );
@@ -150,6 +147,17 @@ export default function AlertsWidget() {
                                 );
                             }
                         })}
+                    </div>
+                )}
+
+                {!loading && items.length > 0 && (
+                    <div style={{ marginTop: '1rem', textAlign: 'center' }}>
+                        <Link
+                            href={`/products?filter=${activeTab}`}
+                            style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--primary)', textDecoration: 'none' }}
+                        >
+                            View All {activeTab === 'low_stock' ? 'Low Stock' : 'Near Expiry'} Items →
+                        </Link>
                     </div>
                 )}
             </div>
