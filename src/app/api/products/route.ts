@@ -29,10 +29,17 @@ export async function GET(request: NextRequest) {
             return NextResponse.json(lowStock.slice(0, 20));
         }
 
-        // Default: return all products filtered optionally by storeId
+        // Default: return all products filtered optionally by storeId and search query
         const storeId = searchParams.get('storeId');
-        const where: Record<string, unknown> = {};
+        const q = searchParams.get('q');
+        const where: any = {};
         if (storeId) where.storeId = storeId;
+        if (q) {
+            where.OR = [
+                { name: { contains: q, mode: 'insensitive' } },
+                { sku: { contains: q, mode: 'insensitive' } }
+            ];
+        }
 
         const products = await prisma.product.findMany({
             where,
