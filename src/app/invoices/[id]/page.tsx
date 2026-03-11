@@ -101,21 +101,21 @@ const InvoicePDF = ({ invoice, gstEnabled = true }: { invoice: Invoice, gstEnabl
                     <View key={item.id} style={pdfStyles.tableRow}>
                         <Text style={pdfStyles.col1}>{item.product?.name || 'Unknown Item'}</Text>
                         <Text style={pdfStyles.col2}>{item.quantity}</Text>
-                        <Text style={pdfStyles.col3}>₹{item.priceAtTime.toFixed(2)}</Text>
+                        <Text style={pdfStyles.col3}>Rs. {item.priceAtTime.toFixed(2)}</Text>
                         <Text style={pdfStyles.col4}>{item.discountAtTime}%</Text>
                         {gstEnabled && <Text style={pdfStyles.col5}>{item.gstAtTime}%</Text>}
-                        <Text style={pdfStyles.col6}>₹{(item.priceAtTime * item.quantity * (1 - item.discountAtTime / 100) * (1 + item.gstAtTime / 100)).toFixed(2)}</Text>
+                        <Text style={pdfStyles.col6}>Rs. {((item.priceAtTime * item.quantity * (1 - item.discountAtTime / 100)) * (1 + item.gstAtTime / 100)).toFixed(2)}</Text>
                     </View>
                 ))}
             </View>
 
             <View style={pdfStyles.summary}>
-                <View style={pdfStyles.summaryRow}><Text>Subtotal</Text><Text>₹{invoice.subTotal.toFixed(2)}</Text></View>
-                <View style={pdfStyles.summaryRow}><Text>Discount</Text><Text>-₹{invoice.discountTotal.toFixed(2)}</Text></View>
-                {gstEnabled && <View style={pdfStyles.summaryRow}><Text>GST</Text><Text>+₹{invoice.gstTotal.toFixed(2)}</Text></View>}
+                <View style={pdfStyles.summaryRow}><Text>Subtotal</Text><Text>Rs. {invoice.subTotal.toFixed(2)}</Text></View>
+                <View style={pdfStyles.summaryRow}><Text>Discount</Text><Text>-Rs. {invoice.discountTotal.toFixed(2)}</Text></View>
+                {gstEnabled && <View style={pdfStyles.summaryRow}><Text>GST</Text><Text>+Rs. {invoice.gstTotal.toFixed(2)}</Text></View>}
                 <View style={[pdfStyles.summaryRow, { borderTop: '1 solid #e2e8f0', marginTop: 5, paddingTop: 5 }]}>
                     <Text style={pdfStyles.totalText}>Total</Text>
-                    <Text style={pdfStyles.totalText}>₹{invoice.totalAmount.toFixed(2)}</Text>
+                    <Text style={pdfStyles.totalText}>Rs. {invoice.totalAmount.toFixed(2)}</Text>
                 </View>
             </View>
 
@@ -407,7 +407,7 @@ export default function InvoiceViewer() {
                     body * { visibility: hidden; }
                     .html-invoice-container, .html-invoice-container * { visibility: visible; }
                     
-                    /* Reset positioning for the invoice container */
+                    /* Reset positioning for the invoice container and heavily reduce padding */
                     .html-invoice-container {
                         position: absolute !important;
                         left: 0 !important;
@@ -417,11 +417,28 @@ export default function InvoiceViewer() {
                         padding: 0 !important;
                         box-shadow: none !important;
                         border: none !important;
+                        background: white !important;
                     }
 
-                    /* Remove background glassmorphism for cleaner print */
-                    .html-invoice-container {
-                        background: white !important;
+                    /* Aggressively reduce spacing between sections for print */
+                    .html-invoice-container > div {
+                        margin-bottom: 1.5rem !important; 
+                    }
+                    
+                    /* Tighten up table padding */
+                    .html-invoice-container table th, 
+                    .html-invoice-container table td {
+                        padding: 0.35rem 0.5rem !important;
+                    }
+                    
+                    .html-invoice-container table td {
+                        font-size: 0.85rem !important;
+                    }
+
+                    /* Tighten footer spacing */
+                    .html-invoice-container > div:last-child {
+                        margin-top: 2rem !important;
+                        padding-top: 1rem !important;
                     }
 
                     /* Hide sidebar, navigation, badges, and top bar */
