@@ -7,7 +7,7 @@ const JWT_SECRET = new TextEncoder().encode(
 
 // Public routes that don't require authentication
 const PUBLIC_ROUTES = ['/login'];
-const API_PUBLIC_ROUTES = ['/api/auth/login'];
+const API_PUBLIC_ROUTES = ['/api/auth/login', '/api/roles/check'];
 
 export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
