@@ -20,8 +20,8 @@ if (typeof window !== 'undefined') {
     Font.register({
         family: 'Roboto',
         fonts: [
-            { src: '/fonts/Roboto-Regular.ttf' },
-            { src: '/fonts/Roboto-Bold.ttf', fontWeight: 'bold' }
+            { src: `${window.location.origin}/fonts/Roboto-Regular.ttf` },
+            { src: `${window.location.origin}/fonts/Roboto-Bold.ttf`, fontWeight: 'bold' }
         ]
     });
 }

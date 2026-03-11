@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ allowed: false }, { status: 400 });
     }
 
-    if (role === 'ADMIN') {
+    if (role?.toUpperCase() === 'ADMIN') {
         return NextResponse.json({ allowed: true }); // Admins always allowed
     }
 
