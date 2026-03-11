@@ -36,9 +36,6 @@ export default async function Dashboard() {
           <p className="page-description">Welcome to your inventory and invoice management system.</p>
         </div>
         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-          <Link href="/products/add" className="btn-secondary">
-            <Plus size={18} /> Add Product
-          </Link>
           <Link href="/invoices/new" className="btn-primary">
             <FileText size={18} /> Make Invoice
           </Link>
@@ -46,7 +43,7 @@ export default async function Dashboard() {
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
-        <div className="card glass-panel" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+        <Link href="/products" className="card glass-panel" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', textDecoration: 'none' }}>
           <div>
             <p style={{ color: '#64748b', fontSize: '0.875rem', fontWeight: 500, marginBottom: '0.25rem' }}>Total Products</p>
             <h3 style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--foreground)' }}>{totalProducts}</h3>
@@ -54,9 +51,9 @@ export default async function Dashboard() {
           <div style={{ background: 'rgba(37, 99, 235, 0.1)', color: 'var(--primary)', padding: '0.75rem', borderRadius: '0.5rem' }}>
             <Package size={24} />
           </div>
-        </div>
+        </Link>
 
-        <div className="card glass-panel" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+        <Link href="/invoices" className="card glass-panel" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', textDecoration: 'none' }}>
           <div>
             <p style={{ color: '#64748b', fontSize: '0.875rem', fontWeight: 500, marginBottom: '0.25rem' }}>Total Invoices</p>
             <h3 style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--foreground)' }}>{totalInvoices}</h3>
@@ -64,11 +61,11 @@ export default async function Dashboard() {
           <div style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', padding: '0.75rem', borderRadius: '0.5rem' }}>
             <FileText size={24} />
           </div>
-        </div>
+        </Link>
 
-        <div className="card glass-panel" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.75rem' }}>
+        <Link href="/analytics" className="card glass-panel" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.75rem', textDecoration: 'none' }}>
           <div style={{ minWidth: 0, flex: 1 }}>
-            <p style={{ color: '#64748b', fontSize: '0.875rem', fontWeight: 500, marginBottom: '0.25rem' }}>Total Revenue</p>
+            <p style={{ color: '#64748b', fontSize: '0.875rem', fontWeight: 500, marginBottom: '0.25rem' }}>Total Sales</p>
             <h3 style={{ fontSize: '1.6rem', fontWeight: 700, color: 'var(--foreground)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               ₹{totalRevenue.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
             </h3>
@@ -76,9 +73,9 @@ export default async function Dashboard() {
           <div style={{ background: 'rgba(139, 92, 246, 0.1)', color: '#8b5cf6', padding: '0.75rem', borderRadius: '0.5rem', flexShrink: 0 }}>
             <TrendingUp size={24} />
           </div>
-        </div>
+        </Link>
 
-        <div className="card glass-panel" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+        <Link href="/products?filter=low_stock" className="card glass-panel" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', textDecoration: 'none' }}>
           <div>
             <p style={{ color: '#64748b', fontSize: '0.875rem', fontWeight: 500, marginBottom: '0.25rem' }}>Low Stock Items</p>
             <h3 style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--foreground)' }}>{lowStockCount}</h3>
@@ -86,7 +83,7 @@ export default async function Dashboard() {
           <div style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--destructive)', padding: '0.75rem', borderRadius: '0.5rem' }}>
             <AlertCircle size={24} />
           </div>
-        </div>
+        </Link>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 350px), 1fr))', gap: '1.5rem' }}>

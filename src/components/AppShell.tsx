@@ -192,17 +192,19 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                         </button>
                     </div>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                        <div style={{
-                            width: '32px', height: '32px', borderRadius: '50%', background: 'var(--primary)',
-                            color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            fontWeight: 'bold', fontSize: '0.875rem'
-                        }}>
-                            A
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                            <div style={{
+                                width: '32px', height: '32px', borderRadius: '50%', background: 'var(--primary)',
+                                color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                fontWeight: 'bold', fontSize: '0.875rem'
+                            }}>
+                                A
+                            </div>
+                            <span style={{ fontWeight: 600, color: 'var(--foreground)', fontSize: '0.9rem' }}>Admin</span>
                         </div>
-                        <span style={{ fontWeight: 600, color: 'var(--foreground)', fontSize: '0.9rem' }}>Admin</span>
+                        <LogoutButton />
                     </div>
-                    <LogoutButton />
                 </div>
 
                 <div className="container" style={{ animation: 'fadeIn 0.3s ease-in-out' }}>
