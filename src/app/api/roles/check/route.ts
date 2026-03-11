@@ -17,7 +17,8 @@ export async function GET(request: NextRequest) {
     }
 
     try {
-        const rp = await prisma.rolePermission.findUnique({ where: { role } });
+        const searchRole = role.toUpperCase();
+        const rp = await prisma.rolePermission.findUnique({ where: { role: searchRole } });
         if (!rp) {
             // Default rules if not set in DB
             if (path.startsWith('/settings')) return NextResponse.json({ allowed: false });
