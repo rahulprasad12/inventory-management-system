@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
                 orderBy: { stockQuantity: 'asc' },
                 include: { store: true }
             });
-            const lowStock = products.filter(p => p.stockQuantity < p.lowStockThreshold);
+            const lowStock = products.filter((p: any) => p.stockQuantity < p.lowStockThreshold);
             return NextResponse.json(lowStock.slice(0, 20));
         }
 

@@ -19,23 +19,19 @@ export async function GET(request: Request) {
 
         // Search invoices by customer name (elasticsearch style suggestion)
         if (query) {
-            const invoices = await prisma.invoice.findMany({
-                where: {
-                    customerName: {
-                        contains: query,
-                    },
-                },
-                take: 10,
+            const allRecent = await prisma.invoice.findMany({
+                take: 100, // Fetch recent 100 to filter in memory
                 orderBy: { createdAt: 'desc' },
                 include: {
-                    items: {
-                        include: {
-                            product: true
-                        }
-                    }
+                    items: { include: { product: true } }
                 }
             });
-            return NextResponse.json(invoices);
+            const qLower = query.toLowerCase();
+            const filteredInvoices = allRecent
+                .filter(inv => inv.customerName.toLowerCase().includes(qLower))
+                .slice(0, 10);
+
+            return NextResponse.json(filteredInvoices);
         }
 
         const allInvoices = await prisma.invoice.findMany({
