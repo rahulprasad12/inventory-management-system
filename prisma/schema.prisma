@@ -9,30 +9,55 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  username  String   @unique
-  password  String
-  role      String   @default("admin")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(uuid())
+  username    String   @unique
+  password    String
+  displayName String?
+  role        String   @default("admin")
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Store {
+  id        String    @id @default(uuid())
+  name      String
+  branch    String?
+  address   String?
+  phone     String?
+  gstin     String?
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  products  Product[]
+  invoices  Invoice[]
 }
 
 model Product {
-  id              String        @id @default(uuid())
-  name            String
-  sku             String        @unique
-  section         String
-  price           Float
-  gstPercent      Float
-  discountPercent Float         @default(0)
-  stockQuantity   Int           @default(0)
-  cartonsCount    Int           @default(0)
-  itemsPerCarton  Int           @default(0)
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-  invoiceItems    InvoiceItem[]
+  id               String        @id @default(uuid())
+  name             String
+  sku              String        @unique
+  section          String
+  price            Float
+  gstPercent       Float
+  discountPercent  Float         @default(0)
+  stockQuantity    Int           @default(0)
+  lowStockThreshold Int         @default(10)
+  cartonsCount     Int           @default(0)
+  itemsPerCarton   Int           @default(0)
+  measurementType  String?       // "weight" | "pieces" | "volume"
+  measurementValue Float?
+  measurementUnit  String?       // "g" | "kg" | "ml" | "L" | "pcs"
+  expiryDate       DateTime?
+  storeId          String?
+  store            Store?        @relation(fields: [storeId], references: [id])
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  invoiceItems     InvoiceItem[]
 
   @@index([name])
+  @@index([storeId])
+  @@index([expiryDate])
 }
 
 model Invoice {
@@ -44,14 +69,17 @@ model Invoice {
   subTotal      Float
   gstTotal      Float
   discountTotal Float
-  paymentStatus String        @default("PENDING")  // PENDING | PARTIAL | PAID
+  paymentStatus String        @default("PENDING")
   paidAmount    Float         @default(0)
+  storeId       String?
+  store         Store?        @relation(fields: [storeId], references: [id])
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
   items         InvoiceItem[]
 
   @@index([customerName])
   @@index([paymentStatus])
+  @@index([storeId])
 }
 
 model InvoiceItem {
@@ -67,6 +95,13 @@ model InvoiceItem {
 
   @@index([invoiceId])
   @@index([productId])
+}
+
+model RolePermission {
+  id          String   @id @default(uuid())
+  role        String   @unique
+  permissions Json
+  updatedAt   DateTime @updatedAt
 }
 
 model Setting {
