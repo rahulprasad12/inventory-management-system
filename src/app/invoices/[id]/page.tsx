@@ -16,13 +16,15 @@ const ClientPDFDownloadLink = dynamic(
 // Internal PDF Document definition (will be used by DownloadLink)
 import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
 
-Font.register({
-    family: 'Roboto',
-    fonts: [
-        { src: '/fonts/Roboto-Regular.ttf' },
-        { src: '/fonts/Roboto-Bold.ttf', fontWeight: 'bold' }
-    ]
-});
+if (typeof window !== 'undefined') {
+    Font.register({
+        family: 'Roboto',
+        fonts: [
+            { src: '/fonts/Roboto-Regular.ttf' },
+            { src: '/fonts/Roboto-Bold.ttf', fontWeight: 'bold' }
+        ]
+    });
+}
 
 // PDF Styles (Matching the HTML styles for consistency)
 const pdfStyles = StyleSheet.create({
