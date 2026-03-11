@@ -1,74 +1,87 @@
-export const dynamic = 'force-dynamic';
-
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 
-export async function GET(request: Request) {
+export const dynamic = 'force-dynamic';
+
+export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
-        const query = searchParams.get('q');
-        const sectionsOnly = searchParams.get('sectionsOnly');
+        const filter = searchParams.get('filter');
+        const daysAhead = parseInt(searchParams.get('days') || '30');
 
-        if (sectionsOnly === 'true') {
-            // Get unique sections
-            const sections = await prisma.product.findMany({
-                select: { section: true },
-                distinct: ['section'],
-            });
-            return NextResponse.json(sections.map((s: { section: string }) => s.section).filter(Boolean));
-        }
-
-        if (query) {
-            // Elasticsearch-style autocomplete prefix match
+        if (filter === 'near_expiry') {
+            const cutoff = new Date();
+            cutoff.setDate(cutoff.getDate() + daysAhead);
             const products = await prisma.product.findMany({
-                where: {
-                    name: {
-                        contains: query,
-                        // sqlite doesn't support insensitive easily natively but prisma normally masks it. 
-                    },
-                },
-                take: 10, // match limit for dropdown
-                orderBy: { name: 'asc' }
+                where: { expiryDate: { not: null, lte: cutoff } },
+                orderBy: { expiryDate: 'asc' },
+                include: { store: true }
             });
             return NextResponse.json(products);
         }
 
-        const allProducts = await prisma.product.findMany({
-            orderBy: { createdAt: 'desc' }
-        });
-        return NextResponse.json(allProducts);
+        if (filter === 'low_stock') {
+            const products = await prisma.product.findMany({
+                orderBy: { stockQuantity: 'asc' },
+                include: { store: true }
+            });
+            const lowStock = products.filter(p => p.stockQuantity < p.lowStockThreshold);
+            return NextResponse.json(lowStock.slice(0, 20));
+        }
 
+        // Default: return all products filtered optionally by storeId
+        const storeId = searchParams.get('storeId');
+        const where: Record<string, unknown> = {};
+        if (storeId) where.storeId = storeId;
+
+        const products = await prisma.product.findMany({
+            where,
+            orderBy: { name: 'asc' },
+            include: { store: true }
+        });
+        return NextResponse.json(products);
     } catch (error) {
-        console.error('Failed to fetch products:', error);
+        console.error('Products API error:', error);
         return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
     }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const { name, sku, section, price, gstPercent, discountPercent, stockQuantity } = body;
+        const {
+            name, sku, section, price, gstPercent, discountPercent,
+            stockQuantity, lowStockThreshold, cartonsCount, itemsPerCarton,
+            measurementType, measurementValue, measurementUnit,
+            expiryDate, storeId
+        } = body;
 
-        if (!name || !sku || price === undefined || stockQuantity === undefined) {
-            return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+        if (!name || !sku || !section || !price) {
+            return NextResponse.json({ error: 'Name, SKU, section and price are required' }, { status: 400 });
         }
 
         const product = await prisma.product.create({
             data: {
-                name,
-                sku,
-                section: section || 'Uncategorized',
+                name, sku, section,
                 price: parseFloat(price),
-                gstPercent: gstPercent ? parseFloat(gstPercent) : 0,
-                discountPercent: discountPercent ? parseFloat(discountPercent) : 0,
-                stockQuantity: parseInt(stockQuantity),
-            },
+                gstPercent: parseFloat(gstPercent) || 0,
+                discountPercent: parseFloat(discountPercent) || 0,
+                stockQuantity: parseInt(stockQuantity) || 0,
+                lowStockThreshold: parseInt(lowStockThreshold) || 10,
+                cartonsCount: parseInt(cartonsCount) || 0,
+                itemsPerCarton: parseInt(itemsPerCarton) || 0,
+                measurementType: measurementType || null,
+                measurementValue: measurementValue ? parseFloat(measurementValue) : null,
+                measurementUnit: measurementUnit || null,
+                expiryDate: expiryDate ? new Date(expiryDate) : null,
+                storeId: storeId || null,
+            }
         });
 
         return NextResponse.json(product, { status: 201 });
-    } catch (error: unknown) {
-        console.error('Failed to create product:', error);
-        if (error && typeof error === 'object' && 'code' in error && error.code === 'P2002') {
+    } catch (error: any) {
+        console.error('Product POST error:', error);
+        if (error?.code === 'P2002') {
             return NextResponse.json({ error: 'A product with this SKU already exists.' }, { status: 409 });
         }
         return NextResponse.json({ error: 'Failed to create product' }, { status: 500 });

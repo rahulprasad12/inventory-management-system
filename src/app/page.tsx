@@ -1,17 +1,17 @@
 import Link from 'next/link';
-import { Package, FileText, TrendingUp, AlertCircle, Plus, ChevronRight } from 'lucide-react';
+import { Package, FileText, TrendingUp, AlertCircle, Plus } from 'lucide-react';
 import prisma from '@/lib/prisma';
 import { format } from 'date-fns';
+import AlertsWidget from '@/components/AlertsWidget';
 
 export const dynamic = 'force-dynamic';
 
 export default async function Dashboard() {
-  // Fetch metrics in parallel
   const [
     totalProducts,
     totalInvoices,
     recentInvoices,
-    lowStockItems,
+    allProducts,
     revenueData
   ] = await Promise.all([
     prisma.product.count(),
@@ -19,19 +19,14 @@ export default async function Dashboard() {
     prisma.invoice.findMany({
       orderBy: { createdAt: 'desc' },
       take: 5,
-      include: { items: true }
+      include: { items: true, store: true }
     }),
-    prisma.product.findMany({
-      where: { stockQuantity: { lt: 10 } },
-      orderBy: { stockQuantity: 'asc' },
-      take: 5
-    }),
-    prisma.invoice.aggregate({
-      _sum: { totalAmount: true }
-    })
+    prisma.product.findMany({ select: { stockQuantity: true, lowStockThreshold: true } }),
+    prisma.invoice.aggregate({ _sum: { totalAmount: true } })
   ]);
 
   const totalRevenue = revenueData._sum.totalAmount || 0;
+  const lowStockCount = allProducts.filter(p => p.stockQuantity < p.lowStockThreshold).length;
 
   return (
     <>
@@ -50,12 +45,7 @@ export default async function Dashboard() {
         </div>
       </div>
 
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-        gap: '1.5rem',
-        marginBottom: '2rem'
-      }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
         <div className="card glass-panel" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
           <div>
             <p style={{ color: '#64748b', fontSize: '0.875rem', fontWeight: 500, marginBottom: '0.25rem' }}>Total Products</p>
@@ -91,7 +81,7 @@ export default async function Dashboard() {
         <div className="card glass-panel" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
           <div>
             <p style={{ color: '#64748b', fontSize: '0.875rem', fontWeight: 500, marginBottom: '0.25rem' }}>Low Stock Items</p>
-            <h3 style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--foreground)' }}>{lowStockItems.length}</h3>
+            <h3 style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--foreground)' }}>{lowStockCount}</h3>
           </div>
           <div style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--destructive)', padding: '0.75rem', borderRadius: '0.5rem' }}>
             <AlertCircle size={24} />
@@ -100,19 +90,15 @@ export default async function Dashboard() {
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '1.5rem' }}>
+        {/* Recent Invoices */}
         <div className="card" style={{ padding: 0 }}>
           <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <h3 style={{ fontSize: '1.125rem', fontWeight: 600 }}>Recent Invoices</h3>
-            <Link href="/invoices" style={{ fontSize: '0.875rem', color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-              View All <ChevronRight size={14} />
-            </Link>
+            <Link href="/invoices" style={{ fontSize: '0.875rem', color: 'var(--primary)' }}>View All →</Link>
           </div>
-
           <div style={{ padding: '1rem' }}>
             {recentInvoices.length === 0 ? (
-              <div style={{ padding: '3rem 1rem', textAlign: 'center', color: '#94a3b8' }}>
-                No recent invoices found.
-              </div>
+              <div style={{ padding: '3rem 1rem', textAlign: 'center', color: '#94a3b8' }}>No recent invoices found.</div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                 {recentInvoices.map(inv => {
@@ -122,36 +108,29 @@ export default async function Dashboard() {
                     PAID: { label: 'Paid', border: '#22c55e', bg: 'rgba(34,197,94,0.08)', color: '#22c55e' },
                   };
                   const status = STATUS_CONFIG[inv.paymentStatus] || STATUS_CONFIG.PENDING;
-
                   return (
-                    <Link
-                      key={inv.id}
-                      href={`/invoices/${inv.id}`}
-                      className="glass-panel"
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        padding: '1rem',
-                        borderRadius: '0.5rem',
-                        textDecoration: 'none',
-                        color: 'inherit',
-                        transition: 'transform 0.2s',
-                        borderLeft: `4px solid ${status.border}`
-                      }}
-                    >
+                    <Link key={inv.id} href={`/invoices/${inv.id}`} className="glass-panel" style={{
+                      display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                      padding: '1rem', borderRadius: '0.5rem', textDecoration: 'none', color: 'inherit',
+                      transition: 'transform 0.2s', borderLeft: `4px solid ${status.border}`
+                    }}>
                       <div>
-                        <div style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <div style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.875rem' }}>
                           {inv.customerName}
-                          <span style={{ fontSize: '0.65rem', padding: '0.15rem 0.4rem', borderRadius: '4px', background: status.bg, color: status.color, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                          <span style={{ fontSize: '0.65rem', padding: '0.15rem 0.4rem', borderRadius: '4px', background: status.bg, color: status.color, textTransform: 'uppercase' }}>
                             {status.label}
                           </span>
                         </div>
-                        <div style={{ fontSize: '0.75rem', color: '#64748b' }}>{inv.invoiceNumber} • {format(new Date(inv.createdAt), 'dd MMM yyyy')}</div>
+                        <div style={{ fontSize: '0.72rem', color: '#64748b' }}>
+                          {inv.invoiceNumber} • {format(new Date(inv.createdAt), 'dd MMM yyyy')}
+                          {inv.store && <> • {inv.store.branch || inv.store.name}</>}
+                        </div>
                       </div>
                       <div style={{ fontWeight: 700, color: 'var(--primary)', textAlign: 'right' }}>
                         <div>₹{inv.totalAmount.toLocaleString('en-IN')}</div>
-                        {inv.paymentStatus === 'PARTIAL' && <div style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 600 }}>Due: ₹{(inv.totalAmount - inv.paidAmount).toLocaleString('en-IN')}</div>}
+                        {inv.paymentStatus === 'PARTIAL' && (
+                          <div style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 600 }}>Due: ₹{(inv.totalAmount - inv.paidAmount).toLocaleString('en-IN')}</div>
+                        )}
                       </div>
                     </Link>
                   );
@@ -161,48 +140,8 @@ export default async function Dashboard() {
           </div>
         </div>
 
-        <div className="card" style={{ padding: 0 }}>
-          <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ fontSize: '1.125rem', fontWeight: 600 }}>Inventory Alerts</h3>
-            <Link href="/inventory" style={{ fontSize: '0.875rem', color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-              Manage Stock <ChevronRight size={14} />
-            </Link>
-          </div>
-
-          <div style={{ padding: '1rem' }}>
-            {lowStockItems.length === 0 ? (
-              <div style={{ padding: '3rem 1rem', textAlign: 'center', color: '#94a3b8' }}>
-                All systems normal. No stock alerts.
-              </div>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                {lowStockItems.map(item => (
-                  <div
-                    key={item.id}
-                    className="glass-panel"
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      padding: '1rem',
-                      borderRadius: '0.5rem',
-                      borderLeft: '4px solid var(--destructive)'
-                    }}
-                  >
-                    <div>
-                      <div style={{ fontWeight: 600 }}>{item.name}</div>
-                      <div style={{ fontSize: '0.75rem', color: '#64748b' }}>SKU: {item.sku} • {item.section}</div>
-                    </div>
-                    <div style={{ textAlign: 'right' }}>
-                      <div style={{ fontWeight: 700, color: 'var(--destructive)' }}>{item.stockQuantity} left</div>
-                      <div style={{ fontSize: '0.625rem', color: '#ef4444', fontWeight: 600, textTransform: 'uppercase' }}>Low Stock</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
+        {/* Alerts Widget — toggleable Low Stock / Near Expiry */}
+        <AlertsWidget />
       </div>
     </>
   );

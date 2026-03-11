@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Package, LayoutDashboard, FileText, PlusCircle, Settings, BarChart3 } from 'lucide-react';
+import { Package, LayoutDashboard, FileText, PlusCircle, Settings, BarChart3, Store } from 'lucide-react';
 import LogoutButton from '@/components/LogoutButton';
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
@@ -96,7 +96,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                     </Link>
                 </nav>
 
-                <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1.25rem', marginTop: 'auto' }}>
+                <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1.25rem', marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                     <Link href="/settings" style={{
                         display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.625rem 1rem',
                         borderRadius: '0.5rem', textDecoration: 'none',
@@ -106,6 +106,16 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                     }}>
                         <Settings size={17} />
                         Settings
+                    </Link>
+                    <Link href="/settings/stores" style={{
+                        display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem 1rem 0.5rem 2.25rem',
+                        borderRadius: '0.5rem', textDecoration: 'none',
+                        color: pathname === '/settings/stores' ? 'var(--foreground)' : '#64748b',
+                        background: pathname === '/settings/stores' ? 'var(--input)' : 'transparent',
+                        fontWeight: 500, fontSize: '0.82rem',
+                    }}>
+                        <Store size={15} />
+                        Stores & Warehouses
                     </Link>
                 </div>
 
